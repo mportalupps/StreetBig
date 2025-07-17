@@ -4,6 +4,7 @@ import pygame
 from pygame import Surface, Rect
 from pygame.font import Font
 
+from Code.Background import Background
 from Code.Const import WIN_HEIGHT
 from Code.Enemy import Enemy
 from Code.Entity import Entity
@@ -16,8 +17,15 @@ class City:
         self.window = window
         self.name = name
         self.entity_list: list[Entity] = []
-        self.entity_list.extend(EntityFactory.get_entity('City1Bg'))
+        self.city_backgrounds = ['City1Bg', 'City2Bg', 'City3Bg']
+        self.current_city_index = 0
+        self.change_score_threshold = 100
+        initial_bg = EntityFactory.get_entity(self.city_backgrounds[self.current_city_index])
+        if isinstance(initial_bg, list):
+            self.entity_list.extend(initial_bg)
+
         self.runner = EntityFactory.get_entity('Runner')
+
         self.entity_list.append(self.runner)
 
         self.score = 0
@@ -40,6 +48,26 @@ class City:
 
         for enemy_name in self.enemy_types:
             self.add_enemies(enemy_name, 2)
+
+    def change_city_background(self):
+        self.current_city_index = (self.current_city_index + 1) % len(self.city_backgrounds)
+        new_bg_name = self.city_backgrounds[self.current_city_index]
+
+        # Remove antigos backgrounds
+        self.entity_list = [e for e in self.entity_list if not isinstance(e, Background)]
+
+        # Adiciona novos backgrounds corretamente
+        bg = EntityFactory.get_entity(new_bg_name)
+
+        if isinstance(bg, list):
+            bg_validos = [b for b in bg if b is not None]
+            self.entity_list[0:0] = bg_validos
+        elif bg is not None:
+            self.entity_list.insert(0, bg)
+
+        music_index = self.current_city_index + 1
+        pygame.mixer_music.load(f'./asset/City{music_index}.mp3')
+        pygame.mixer_music.play(-1)
 
     def update_score(self, dt):
         self.score_timer += dt
@@ -65,7 +93,11 @@ class City:
     def add_enemies(self, name: str, quantity: int):
         for _ in range(quantity):
             position = (random.randint(2000, 20000), 400)
-            self.entity_list.append(EntityFactory.get_entity(name, position))
+            enemy = EntityFactory.get_entity(name, position)
+            if isinstance(enemy, list):
+                self.entity_list.extend(enemy)
+            elif enemy is not None:
+                self.entity_list.append(enemy)
 
     def can_spawn_enemy_at(self, x_pos):
         enemies = [e for e in self.entity_list if hasattr(e, 'speed')]
@@ -85,7 +117,11 @@ class City:
             pos_y = 400
 
             if self.can_spawn_enemy_at(pos_x):
-                self.entity_list.append(EntityFactory.get_entity(enemy_name, (pos_x, pos_y)))
+                enemy = EntityFactory.get_entity(enemy_name, (pos_x, pos_y))
+                if isinstance(enemy, list):
+                    self.entity_list.extend(enemy)
+                elif enemy is not None:
+                    self.entity_list.append(enemy)
                 self.last_spawn_time = now
                 break
 
@@ -113,6 +149,10 @@ class City:
                 self.update_score(dt)
 
                 self.window.fill((0, 0, 0))
+
+                if self.score > 0 and self.score % self.change_score_threshold == 0:
+                    self.change_city_background()
+                    self.change_score_threshold += 100
 
                 for ent in self.entity_list:
                     self.window.blit(ent.surf, ent.rect)

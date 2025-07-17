@@ -7,14 +7,14 @@ from Code.Enemy import Enemy
 class EntityFactory:
 
     @staticmethod
-    def get_entity(entity_name: str, position=(0,0)):
+    def get_entity(entity_name: str, position=(0, 0)):
         match entity_name:
             case 'City1Bg':
-                list_bg = []
-                for i in range(7):
-                    list_bg.append(Background(f'City1Bg{i}', (0, 0)))
-                    list_bg.append(Background(f'City1Bg{i}', (WIN_WIDTH, 0)))
-                return list_bg
+                return EntityFactory._load_backgrounds('City1Bg', 7)
+            case 'City2Bg':
+                return EntityFactory._load_backgrounds('City2Bg', 6)
+            case 'City3Bg':
+                return EntityFactory._load_backgrounds('City3Bg', 6)
             case 'Runner':
                 return Runner('Runner', (30, 300))
             case 'DogBlack':
@@ -29,3 +29,11 @@ class EntityFactory:
                 return Enemy('RatBrown', position)
             case 'RatBlue':
                 return Enemy('RatBlue', position)
+
+    @staticmethod
+    def _load_backgrounds(prefix: str, count: int):
+        bg_list = []
+        for i in range(count):
+            bg_list.append(Background(f'{prefix}{i}', (0, 0)))
+            bg_list.append(Background(f'{prefix}{i}', (WIN_WIDTH, 0)))
+        return bg_list
