@@ -17,6 +17,8 @@ class EntityFactory:
                 return EntityFactory._load_backgrounds('City3Bg', 6)
             case 'Runner':
                 return Runner('Runner', (30, 300))
+            case _ if 'Runner' in entity_name:
+                return Runner(entity_name, (30, 300))
             case 'DogBlack':
                 return Enemy('DogBlack', position)
             case 'DogWhite':
@@ -37,3 +39,9 @@ class EntityFactory:
             bg_list.append(Background(f'{prefix}{i}', (0, 0)))
             bg_list.append(Background(f'{prefix}{i}', (WIN_WIDTH, 0)))
         return bg_list
+
+    def _load_runner(prefix: str):
+        frames = []
+        for i in range(10):
+            frames.append(f'{prefix}{i}')
+        return Runner(frames, (30, 300))
