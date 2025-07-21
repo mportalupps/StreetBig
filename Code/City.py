@@ -20,7 +20,7 @@ class City:
         self.entity_list: list[Entity] = []
         self.city_backgrounds = ['City1Bg', 'City2Bg', 'City3Bg']
         self.current_city_index = 0
-        self.change_score_threshold = 1000
+        self.change_score_threshold = 775
         initial_bg = EntityFactory.get_entity(self.city_backgrounds[self.current_city_index])
         if isinstance(initial_bg, list):
             self.entity_list.extend(initial_bg)
@@ -43,7 +43,7 @@ class City:
         current_bg_name = self.city_backgrounds[self.current_city_index]
         self.enemy_types = self.enemies_by_city.get(current_bg_name, [])
         self.min_distance_between_enemies = 400
-        self.spawn_cooldown = 100
+        self.spawn_cooldown = 120
         self.last_spawn_time = 0
 
 
@@ -173,7 +173,7 @@ class City:
 
                 if self.score > 0 and self.score % self.change_score_threshold == 0:
                     self.change_city_background()
-                    self.change_score_threshold += 1200
+                    self.change_score_threshold += 900
 
                 for ent in self.entity_list:
                     self.window.blit(ent.surf, ent.rect)
@@ -196,7 +196,7 @@ class City:
                 self.difficulty_timer += clock.get_time()
                 if self.difficulty_timer >= 10000:
                     self.difficulty_timer = 0
-                    self.speed_multiplier += 0.1
+                    self.speed_multiplier += 0.08
 
                 for ent in self.entity_list:
                     if hasattr(ent, 'set_speed_multiplier'):

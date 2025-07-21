@@ -2,6 +2,7 @@ import pygame
 import os
 from pygame import Surface, Rect
 from pygame.font import Font
+import sys
 
 from Code.Const import WIN_WIDTH, MENU_OPTION
 
@@ -34,7 +35,7 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    sys.exit()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:
@@ -91,7 +92,7 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         running = False
