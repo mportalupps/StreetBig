@@ -43,7 +43,7 @@ class City:
         current_bg_name = self.city_backgrounds[self.current_city_index]
         self.enemy_types = self.enemies_by_city.get(current_bg_name, [])
         self.min_distance_between_enemies = 400
-        self.spawn_cooldown = 150
+        self.spawn_cooldown = 100
         self.last_spawn_time = 0
 
 
@@ -113,7 +113,7 @@ class City:
 
     def add_enemies(self, name: str, quantity: int):
         for _ in range(quantity):
-            position = (random.randint(1000, 10000), 400)
+            position = (random.randint(1000, 9000), 400)
             enemy = EntityFactory.get_entity(name, position)
             if isinstance(enemy, list):
                 self.entity_list.extend(enemy)
@@ -134,7 +134,7 @@ class City:
 
         for _ in range(10):
             enemy_name = random.choice(self.enemy_types)
-            pos_x = random.randint(1000, 10000)
+            pos_x = random.randint(1000, 9000)
             pos_y = 400
 
             if self.can_spawn_enemy_at(pos_x):
